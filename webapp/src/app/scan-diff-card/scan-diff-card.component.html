@@ -1,0 +1,45 @@
+<div class="card" *ngIf="scanResult">
+  <h5 class="card-header">{{scanResult.scan.created_at | date :'long'}}</h5>
+  <h5 class="card-title">Scan Results</h5>
+  <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Port</th>
+          <th scope="col">State</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let port of scanResult.scan.ports">
+          <th scope="row">{{port.port}}/{{port.protocol}}</th>
+          <td>{{port.state}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="scanResult.diff.length;else no_diff">
+    <h5 class="card-title">Diff from previous scan</h5>
+    <div class="card-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">From</th>
+            <th scope="col">To</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let diff of scanResult.diff">
+            <td>{{diff.from}}</td>
+            <td>{{diff.to}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <ng-template #no_diff>
+    <div class="card-footer text-muted">
+      No diff available. Either no ports have changed since the last scan, or this is the first scan of <span *ngIf="scanResult">{{scanResult.scan.host}}</span>.
+    </div>
+  </ng-template>
+</div>

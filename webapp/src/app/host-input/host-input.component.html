@@ -1,0 +1,51 @@
+<div *ngIf="error" class="alert alert-warning" role="alert">
+  {{error}} <a href="/">dismiss</a>
+</div>
+
+<input type="text" id="host" class="form-control" placeholder="Enter a Hostname or IP Address" #hostBox
+  (input)="onInput(hostBox.value)" />
+
+<div class="d-flex justify-content-center">
+  
+  <!-- history button, TODO: factor out into a component -->
+  <button class="btn btn-outline-secondary" (click)="history()" [disabled]="loading || !host">
+    <span *ngIf="!loading || !viewHistory;else history_loading">
+      View History
+    </span>
+    <ng-template #history_loading>
+      <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+      Loading...
+    </ng-template>
+  </button>
+
+  <!-- scan button -->
+  <button class="btn btn-outline-secondary" (click)="scan()" [disabled]="loading || !host">
+    <span *ngIf="!loading || viewHistory;else scan_loading">
+      Scan Now
+    </span>
+    <ng-template #scan_loading>
+      <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+      Loading...
+    </ng-template>
+  </button>
+
+</div>
+
+<div *ngIf="viewHistory;else scan_output">
+  <div *ngIf="scanHistory.length;else no_history">
+    <h3>Scan History <span class="badge">{{scanHistory.length}}</span></h3>
+    <div *ngFor="let scan of scanHistory">
+      <app-scan-card [scan]="scan"></app-scan-card>
+    </div>
+  </div>
+  <ng-template #no_history>
+    <p *ngIf="!error">No Scan History for {{host}}</p>
+  </ng-template>
+</div>
+
+<ng-template #scan_output>
+  <div *ngIf="scanResult">
+    <h3>Scan Results</h3>
+    <app-scan-diff-card [scanResult]="scanResult"></app-scan-diff-card>
+  </div>
+</ng-template>

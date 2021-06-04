@@ -1,0 +1,19 @@
+input {
+    border-radius: 25px;
+    font-size: 1.3em;
+    text-align: center;
+}
+button {
+    margin: 2em 0.5em;
+}
+h3 {
+    padding-bottom: 1em;
+}
+.badge {
+    color: #333;
+    border: solid 1px #ddd;
+    border-radius: 25px;
+    background:rgba(0,0,0,.03);
+    font-size: 0.5em;
+    font-weight: 400;
+}

@@ -1,0 +1,30 @@
+version: "3.3"
+services:
+  api:
+    image: bndw/port-scanner:api
+    build:
+      context: ./
+    environment:
+      - PORT=80
+      - CORS_ALLOWED_ORIGINS=http://localhost:8080,http://localhost:4200
+      - DB_FILE=/scans.db
+    ports:
+      - "8081:80"
+    volumes:
+      - ${PWD}/bin/scans.db:/scans.db
+    networks:
+      - mesh
+
+  web:
+    image: bndw/port-scanner:web
+    build:
+      context: ./webapp
+    ports:
+      - "8080:80"
+    networks:
+      - mesh
+    depends_on:
+      - api
+
+networks:
+  mesh: {}

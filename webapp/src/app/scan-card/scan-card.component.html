@@ -1,0 +1,19 @@
+<div class="card" *ngIf="scan">
+  <h5 class="card-header">{{scan.created_at | date :'long'}}</h5>
+  <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Port</th>
+          <th scope="col">State</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let port of scan.ports">
+          <th scope="row">{{port.port}}/{{port.protocol}}</th>
+          <td>{{port.state}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
