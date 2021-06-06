@@ -116,25 +116,36 @@ func (r *sqliteRepo) GetScan(ctx context.Context, id int64) (*Scan, error) {
 	}, nil
 }
 
-// ListScans returns all scans for a given host, ordered by most recent.
+// ListScans returns all scans for a given host, ordered by most recent. If
+// no host is provided all scans are returned.
 func (r *sqliteRepo) ListScans(ctx context.Context, host string) ([]Scan, error) {
-	const query = `SELECT id, result, created_at FROM scan WHERE host=? ORDER BY created_at DESC;`
+	var (
+		query string
+		rows  *sql.Rows
+		err   error
+	)
+	if host != "" {
+		query = `SELECT id, host, result, created_at FROM scan WHERE host=? ORDER BY created_at DESC;`
+		rows, err = r.DB.Query(query, host)
+	} else {
+		query = `SELECT id, host, result, created_at FROM scan ORDER BY created_at DESC;`
+		rows, err = r.DB.Query(query)
+	}
 
-	row, err := r.DB.Query(query, host)
 	if err != nil {
 		return nil, err
 	}
-	defer row.Close()
+	defer rows.Close()
 
 	scans := make([]Scan, 0)
-	for row.Next() {
+	for rows.Next() {
 		var (
 			id     int64
 			result []byte
 			ts     string
 		)
 
-		row.Scan(&id, &result, &ts)
+		rows.Scan(&id, &host, &result, &ts)
 
 		ports, err := decodeScanResults(result)
 		if err != nil {

@@ -19,12 +19,14 @@ func getScansHandler(db repo.Repo) gin.HandlerFunc {
 			host = strings.ToLower(c.Query("host"))
 		)
 
-		err := validateHostnameOrIP(host)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
-			return
+		if host != "" {
+			err := validateHostnameOrIP(host)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{
+					"error": err.Error(),
+				})
+				return
+			}
 		}
 
 		scans, err := db.ListScans(ctx, host)
